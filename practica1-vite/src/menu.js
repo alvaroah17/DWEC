@@ -1,24 +1,18 @@
 let salir = false;
 
 do{
-    do{
-        const opcionesMenu = prompt(
+    const opcionesMenu = prompt(
         "================\n"+
                "MENU\n" +
-         "================\n" +
+        "================\n" +
          "1. Ver catalogo\n" +
          "2. Salir\n" +
          "Elige una opcion"
-        )
-
-        if (opcionesMenu !=1 && opcionesMenu!=2 ) {
-            console.log("ERROR: Esa opcion no esta disponible, elija 1 o 2");
-        }
-
-    }while(opcionesMenu !=1 && opcionesMenu!=2)
+    )
 
     switch (opcionesMenu) {
     case value: 1
+        //ver catalogo
         
         break;
     case value: 2
@@ -27,6 +21,6 @@ do{
         break;
 
     default:
-        break;
+        console.log("ERROR: Esa opcion no esta disponible, elija 1 o 2");
     }
-}while (!salir):
+}while (!salir);
