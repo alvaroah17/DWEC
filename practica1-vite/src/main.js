@@ -58,3 +58,11 @@ document.querySelector('#app').innerHTML = `
 `
 
 setupCounter(document.querySelector('#counter'))
+
+//------------------------------------------------
+//Importaciones
+import { catalogo } from './catalogo.js'
+import { precioFinal } from './logic.js'
+import { iniciarMenu } from './menu.js'
+
+iniciarMenu();
