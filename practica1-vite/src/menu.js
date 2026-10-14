@@ -5,7 +5,7 @@ do {
   switch(eleccionMenu){
     case 1:
       //1. Ver Catálogo
-
+      
       break;
     case 2:
       //2. Buscar Producto
