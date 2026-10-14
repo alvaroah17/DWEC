@@ -159,20 +159,20 @@ export const catalogo = [
   },
   {
     "id": 18,
-    "titulo": "Chrono Trigger",
+    "nombre": "Chrono Trigger",
     "plataforma": "SNES",
     "categoria": "RPG",
     "precioBase": 45,
     "estado": "usado-como-nuevo",
-    "stock": 4
+    "stock": 4,
   },
   {
     "id": 19,
-    "titulo": "Streets of Rage 2",
+    "nombre": "Streets of Rage 2",
     "plataforma": "MEGA DRIVE",
     "categoria": "Lucha",
     "precioBase": 60,
     "estado": "nuevo-precintado",
-    "stock": 10
+    "stock": 10,
   }
 ];
