@@ -1,1 +1,2 @@
 # DWEC
+## PRACTICA 1 
