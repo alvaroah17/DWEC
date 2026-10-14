@@ -30,16 +30,19 @@ export const descuentoVolumen = function descuentoVolumen(
 
 export const UMBRAL_STOCK_BAJO = 3;
 export const comprobarStock = function stockBajo(stock,umbral = UMBRAL_STOCK_BAJO) {
-  return stock < umbral ? true : false;
+  return stock > umbral ? true : false;
 };
 
 //Para redondear y que te de 2 decimales en vez de un entero
-export const redondear = (numero) => Math.round(numero * 100) / 100;
+export const redondear = (numero) => numero.toFixed(2);
 
 export const precioFinal = function precioFinal(estado, precio, unidades) {
   let precioConDescuentos = descuentoVolumen(unidades,precioEstado(estado, precio));
-  return redondear(precioConDescuentos * unidades);
+  return redondear(precioConDescuentos);
 };
+export const precioTotalCompra = (precioTotal, cantidad) => {
+  return redondear(precioTotal*cantidad)
+} 
 /*
 export const precioFinal2 = (estado, precio, unidades)=>{
   let precioConDescuentos = descuentoVolumen(unidades, precioEstado(estado, precio));
@@ -48,28 +51,28 @@ export const precioFinal2 = (estado, precio, unidades)=>{
 
 //------------------------------------------------------------------------------------------
 //INVENTARIO
-
 export const buscarProducto = (catalogo, id) => {
-  return catalogo.find((producto) => producto.id === id);
+  return catalogo.find((producto) => id===producto.id);
 };
 
 export const RegistroVentas = (catalogo, id, cantidad) => {
   //Se elige producto y cantidad.
   const resultadoProducto = buscarProducto(catalogo, id);
-  const precioFinalJuego = precioFinal(resultadoProducto.estado, resultadoProducto.precio, cantidad)
   /*Se valida con un condicional que haya stock suficiente (usa el
   operador que corresponda: ternario para una decisión simple, 
   if/else si hay más de dos caminos)*/
 
   if (resultadoProducto) {
+    const precioFinalJuego = precioFinal(resultadoProducto.estado, resultadoProducto.precio, cantidad);
+    const precioTotal = precioTotalCompra(precioFinalJuego, cantidad);
     const resultadoStock = comprobarStock(resultadoProducto.stock);
-    if (resultadoStock === true && resultadoProducto.stock <= cantidad) {
-      console.log(
+    if (resultadoStock === true && resultadoProducto.stock >= cantidad) {
+      /*console.log(
         "Puedes comprar, quedan ",
         resultadoProducto.stock,
         " existencias del producto ",
-        resultadoProducto.titulo,
-      );
+        resultadoProducto.nombre,
+      );*/
       const catalogoStockActualizado = catalogo.map((juegos) => {
         if (id === juegos.id) {
           return {
@@ -80,12 +83,12 @@ export const RegistroVentas = (catalogo, id, cantidad) => {
           return { ...juegos };
         }
       });
-      return {catalogoStockActualizado, resultadoProducto:{...resultadoProducto, precioFinalJuego, cantidad}}
+      return {catalogoStockActualizado, resultadoProducto:{...resultadoProducto, precioFinalJuego, cantidad }, totalCompra: precioTotal}
 
     } else if (resultadoProducto.stock < cantidad) {
       console.log(
         "ERROR: La cantidad a comprar del producto ",
-        resultadoProducto.titulo,
+        resultadoProducto.nombre,
         "es mayor que sus existencias ",
     
       );
@@ -141,8 +144,8 @@ export const verCatalogoCategoria = (catalogo, categoria) => {
   });
 }
 
-export const catalogoProductosStockBajo = (catalogo) =>{
-  const catalogoFiltrado = catalogo.filter((juego)=>comprobarStock(juego.stock))
+export const verCatalogoProductosStockBajo = (catalogo) =>{
+  const catalogoFiltrado = catalogo.filter((juego)=>!comprobarStock(juego.stock))
 
   catalogoFiltrado.forEach((juego)=>{
     console.log(
@@ -163,4 +166,58 @@ export const catalogoProductosStockBajo = (catalogo) =>{
     );
   });
 }
+
+export const reponerStockUnJuego = (catalogo, id) =>{
+  const resultadoProducto = buscarProducto(catalogo, id);
+
+  if (resultadoProducto) {
+    if (resultadoProducto.stock>=1) {
+      console.log(
+        "Quedan ",
+        resultadoProducto.stock,
+        " existencias del producto ",
+        resultadoProducto.nombre,
+      );
+      const cantidadAnadida = parseInt(prompt("Introduce cuantas existencias quieres añadir al stock actual: "), 10)
+  
+      const catalogoStockActualizado = catalogo.map((juegos) => {
+        if (id === juegos.id) {
+          return {
+            ...juegos,
+            stock: juegos.stock + cantidadAnadida,
+          };
+        } else {
+          return { ...juegos };
+        }
+      });
+      return {catalogoStockActualizado, resultadoProducto:{...resultadoProducto, cantidadAnadida }}
+
+    } else {
+      console.log(
+        "No queda stock de este producto, stock: ",
+        resultadoProducto.stock,
+        " existencias del producto ",
+        resultadoProducto.nombre,
+      );
+      const cantidadAnadida = parseInt(prompt("Introduce cuantas existencias quieres añadir: "), 10)
+
+      const catalogoStockActualizado = catalogo.map((juegos)=>{
+        if(id===juegos.id){
+          return {
+            ...juegos,
+            stock: juegos.stock + cantidadAnadida
+          }
+        } else{
+          console.log("No se ha podido modificar el stock ya que no se ha encontrado su ID")
+          return { ...juegos };
+        }
+      });
+      return {catalogoStockActualizado, resultadoProducto:{...resultadoProducto, cantidadAnadida }}
+    }
+  } else {
+    console.log("ERROR: NO EXISTE ESE PRODUCTO");
+    return null;
+  }
+};
+
 
