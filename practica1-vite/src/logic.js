@@ -92,11 +92,11 @@ export const RegistroVentas = (catalogo, id, cantidad) => {
         "es mayor que sus existencias ",
     
       );
-      return null;
+      return " ";
     }
   } else {
     console.log("ERROR: NO EXISTE ESE PRODUCTO");
-    return null;
+    return " ";
   }
 };
 
@@ -220,4 +220,33 @@ export const reponerStockUnJuego = (catalogo, id) =>{
   }
 };
 
+export const informeCaja = (catalogo, ventas) => {
+  const valorStockTotal = catalogo.reduce((acc, juego) => {
+    return acc + juego.precio * juego.stock;
+  }, 0);
 
+  const totalFacturado = ventas.reduce((acc, venta) => {
+    return acc + venta.totalCompra;
+  }, 0);
+
+  const juegosVendidos = [];
+  ventas.map((venta) => {
+    if (!juegosVendidos.find((juego) => juego.id === venta.id)) {
+      const ventasFiltradas = ventas.filter((game) => game.id === venta.id);
+      const unidadesTotal = ventasFiltradas.reduce((acc, game) => {
+        return acc + game.unidades;
+      }, 0);
+      juegosVendidos.push({ ...venta, unidadesTotal });
+    }
+  });
+
+  const juegoMasVendido = juegosVendidos.reduce((acc, juego) => {
+    return juego.unidadesTotal > acc.unidadesTotal ? juego : acc;
+  });
+
+  return {
+    valorStockTotal,
+    totalFacturado,
+    juegoMasVendido,
+  };
+};
