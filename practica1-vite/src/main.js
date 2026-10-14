@@ -1,6 +1,3 @@
-//Importaciones
+import { menu } from "./menu";
 
-import { catalogo } from "./catalogo";
-import { verCatalogoEntero } from "./logic";
-
-verCatalogoEntero(catalogo);
+menu();
