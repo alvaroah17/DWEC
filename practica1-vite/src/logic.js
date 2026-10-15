@@ -13,15 +13,15 @@ export const precioEstado = function precioEstado(estado, precio) {
   }
 };
 
-export const descuentoVolumen = function descuentoVolumen(
-  unidades,
-  precioConEstado,
-) {
+export const descuentoVolumen = function descuentoVolumen(unidades,precioConEstado) {
   if (unidades <= 1) {
     return precioConEstado;
   }
   if (unidades === 2 || unidades === 3) {
     return precioConEstado * 0.95;
+  }
+  if (unidades >= 8) {
+    return precioConEstado * 0.82;
   }
   if (unidades >= 4) {
     return precioConEstado * 0.9;
@@ -37,7 +37,8 @@ export const comprobarStock = function stockBajo(stock,umbral = UMBRAL_STOCK_BAJ
 export const redondear = (numero) => numero.toFixed(2);
 
 export const precioFinal = function precioFinal(estado, precio, unidades) {
-  let precioConDescuentos = descuentoVolumen(unidades,precioEstado(estado, precio));
+  let precioConEstado = precioEstado(estado, precio)
+  let precioConDescuentos = descuentoVolumen(unidades,precioConEstado);
   return redondear(precioConDescuentos);
 };
 export const precioTotalCompra = (precioTotal, cantidad) => {
@@ -221,8 +222,22 @@ export const reponerStockUnJuego = (catalogo, id) =>{
 };
 
 export const informeCaja = (catalogo, ventas) => {
-  const valorStockTotal = catalogo.reduce((acc, juego) => {
+  
+  /*const valorStockTotal = catalogo.reduce((acc, juego) => {
     return acc + juego.precio * juego.stock;
+  }, 0);*/
+
+  const valorStockTotal = catalogo.reduce((acc, juego) => {
+    const subtotalStock = juego.precio * juego.stock;
+    /*
+    if(isNaN(subtotalStock)){
+      return acc
+    }
+    else {
+      return acc + subtotalStock
+    }
+    */
+    return isNaN(subtotalStock) ? acc : acc + subtotalStock;
   }, 0);
 
   const totalFacturado = ventas.reduce((acc, venta) => {
@@ -250,3 +265,6 @@ export const informeCaja = (catalogo, ventas) => {
     juegoMasVendido,
   };
 };
+
+/*
+Un nuevo tramo 8 o mas unidades un 18% de descuento */

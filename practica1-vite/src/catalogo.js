@@ -7,7 +7,7 @@ export const catalogo = [
     categoria: "Plataformas",
     precio: 25,
     estado: "usado-como-nuevo",
-    stock: 8,
+    stock: 9,
   },
   {
     id: 2,
@@ -162,7 +162,7 @@ export const catalogo = [
     "nombre": "Chrono Trigger",
     "plataforma": "SNES",
     "categoria": "RPG",
-    "precioBase": 45,
+    "precio": 45,
     "estado": "usado-como-nuevo",
     "stock": 4,
   },
@@ -171,7 +171,7 @@ export const catalogo = [
     "nombre": "Streets of Rage 2",
     "plataforma": "MEGA DRIVE",
     "categoria": "Lucha",
-    "precioBase": 60,
+    "precio": 60,
     "estado": "nuevo-precintado",
     "stock": 10,
   }
