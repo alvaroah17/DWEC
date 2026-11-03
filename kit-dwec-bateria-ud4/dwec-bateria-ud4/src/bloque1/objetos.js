@@ -27,6 +27,7 @@ export function leerPropiedad(objeto, clave) {
 // 🪜 2 · ¿Tiene el objeto esa propiedad COMO PROPIA (no heredada)?
 //        tienePropia({ a: 1 }, "a") → true · tienePropia({ a: 1 }, "toString") → false
 export function tienePropia(objeto, clave) {
+  return Object.hasOwn(objeto, clave)
   throw new Error("Sin hacer");
 }
 
@@ -34,12 +35,19 @@ export function tienePropia(objeto, clave) {
 // ✍️ 1 · Devuelve un libro NUEVO igual que el que te pasan, pero con prestado: true.
 //        El original NO puede cambiar (el comprobador te lo pasa congelado).
 export function marcarPrestado(libro) {
+  return {...libro, prestado: true }
   throw new Error("Sin hacer");
 }
 
 // ✍️ 2 · Cuenta cuántos libros hay de cada autor.
 //        contarPorAutor([{ autor: "Ende" }, { autor: "Tolkien" }, { autor: "Ende" }]) → { Ende: 2, Tolkien: 1 }
 export function contarPorAutor(libros) {
+  const conteoAutores = {};
+  for (const libro of libros){
+    const autor = libro.autor
+    conteoAutores[autor] = (conteoAutores[autor] ?? 0) + 1 
+  }
+  return conteoAutores;
   throw new Error("Sin hacer");
 }
 
@@ -47,6 +55,7 @@ export function contarPorAutor(libros) {
 //        socio = { nombre: "Ana", direccion: { ciudad: "Cádiz" }, prestamos: ["111"] }
 //        Cuidado: { ...socio } no basta. ¿Por qué? (predicción p3)
 export function copiaProfunda(socio) {
+  return {...socio, direccion: {...socio.direcion}, prestamos: [...socio.prestamos]};
   throw new Error("Sin hacer");
 }
 
@@ -54,5 +63,8 @@ export function copiaProfunda(socio) {
 //        ficha(crearLibro("Momo", "Ende", 300)) → "titulo: Momo · autor: Ende · paginas: 300 · prestado: false"
 //        (pista: Object.entries + filter + map + join)
 export function ficha(libro) {
+  return Object.entries(libro).filter(([,v]) => typeof(v) !== "function")
+  .map(([k, v]) => `${k}: ${v}`)
+  .join(" · ");
   throw new Error("Sin hacer");
 }
