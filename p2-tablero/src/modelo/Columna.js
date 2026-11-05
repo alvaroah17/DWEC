@@ -55,8 +55,10 @@ export class Columna {
   ordenadas(){
     const arrayOrdenado = [...this.#tareas].sort((a, b) => {
       if(b.peso !== a.peso) return b.peso - a.peso
-      
-      
+      if (a.limite === null && b.limite === null) return 0;
+      if (a.limite === null) return 1;
+      if (b.limite === null) return -1;
+      return a.limite - b.limite;      
     }) 
   }
 }
