@@ -5,11 +5,15 @@ import { Tarea } from "./Tarea.js";
 
 export class Columna {
   // Privado: #tareas, un array
-
+  #tareas = [];
   constructor(nombre, limiteWip = null) {
     // 1 · nombre: texto no vacío (sin espacios a los lados) → si no, TypeError
     //     limiteWip: null (sin límite) o un entero ≥ 1 → si no, RangeError
-    throw new Error("Sin hacer");
+    if (typeof(nombre)!=="string" || nombre.trim() === "") throw new TypeError("ERROR: El nombre introducido no es valido");
+    else this.nombre = nombre.trim();
+    
+    if(limiteWip===null || (Number.isInteger(limiteWip) && limiteWip>=1)) this.limiteWip = limiteWip;
+    else throw new RangeError("ERROR: El limiteWip introducido no es válido");
   }
 
   // 2 · get llena: true si hay límite y ya hay tantas tareas como el límite
