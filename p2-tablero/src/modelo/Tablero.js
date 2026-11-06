@@ -16,21 +16,58 @@ export class Tablero {
   constructor(limiteEnCurso = 3) {
     // Crea las tres columnas; solo «En curso» lleva límite WIP (limiteEnCurso)
      this.#columnas.set("Por hacer", new Columna("Por hacer"))
-    throw new Error("Sin hacer");
+     this.#columnas.set("En curso", new Columna("En curso", limiteEnCurso))
+     this.#columnas.set("Hecho", new Columna("Hecho"))
   }
 
   // static desde(datos, limiteEnCurso): un Tablero con una tarea por cada objeto de datos
   //   (usa crearTarea)
   static desde(datos, limiteEnCurso){
+    const tablero = new Tablero(limiteEnCurso)
+    
+    datos.forEach(dato => {
+      tablero.crearTarea(dato)
+    });
 
+    return tablero;
   }
   // columna(nombre): la Columna, o un Error si no existe (que el mensaje lleve el nombre)
   // get columnas: array con las tres columnas, en orden
+  columna(nombre){
+    if (!(this.#columnas.has(nombre))) throw new Error(`ERROR: La columna: ${nombre} no se ha podido encontrar`)
+    else return this.#columnas.get(nombre);
+  }
 
+  get columnas(){
+    const listaColumnas = [...this.#columnas.values()];
+    return listaColumnas; 
+  }
   // crearTarea(datos): TareaRecurrente si datos trae cadaDias, Tarea si no → a «Por hacer»
   //   y la devuelve. datos es un objeto { titulo, prioridad, limite, cadaDias }: saca cada campo
   //   y pásaselo al constructor, en su orden (new Tarea(datos) NO vale: espera el título)
+  
+  crearTarea(datos){
+    const titulo = datos.titulo;
+    const prioridad = datos.prioridad;
+    const limite = datos.limite;
+    
+    if ("cadaDias" in datos){
+      const cadaDias = datos.cadaDias;  
+      
+      const tareaRecurrente = new TareaRecurrente(titulo, prioridad, limite, cadaDias);
+      
+      this.columna("Por hacer").añadir(tareaRecurrente);
 
+      return tareaRecurrente;
+    }
+    else{  
+      const tarea = new Tarea(titulo, prioridad, limite);
+      
+      this.columna("Por hacer").añadir(tarea);
+      
+      return tarea;
+    }
+  }
   // buscar(id): la tarea, esté en la columna que esté, o null
   // dondeEsta(id): la Columna donde está, o null
 
