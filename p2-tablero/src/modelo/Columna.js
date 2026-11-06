@@ -54,11 +54,12 @@ export class Columna {
   //     Pista: [...this.#tareas].sort((a, b) => …) — ¿por qué la copia?
   ordenadas(){
     const arrayOrdenado = [...this.#tareas].sort((a, b) => {
-      if(b.peso !== a.peso) return b.peso - a.peso
-      if (a.limite === null && b.limite === null) return 0;
-      if (a.limite === null) return 1;
-      if (b.limite === null) return -1;
-      return a.limite - b.limite;      
+      if (b.peso !== a.peso) return b.peso - a.peso 
+      if (a.limite === null && b.limite === null) return 0; //Empate | 0 hace que los 2 tengan la misma importancia
+      if (a.limite === null) return 1; //Gana B | Positivo gana 2 valor recogido
+      if (b.limite === null) return -1; //Gana A | Negativo gana 1 valor recogido
+      return a.limite - b.limite; //Si ninguna de las condiciones de kas fechas se cumplen entonces 
+                                  //que se ordene de menor a mayor (mas cercanaa a mas lejana)      
     }) 
   }
 }
