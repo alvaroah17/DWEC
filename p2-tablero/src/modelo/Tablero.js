@@ -88,17 +88,26 @@ export class Tablero {
   // mover(id, destino): Error si no existe la tarea · Error si la columna destino está llena
   //   (¡comprueba ANTES de quitarla de su columna, o se perdería!) · la mueve y la devuelve
   mover(id, destino){
-    if(this.dondeEsta(id) === null) throw new Error(`ERROR: No se ha encontrado la tarea con id: ${id}`);
-    
-    if(this.columna(destino).llena) throw new Error(`ERROR: La columna ${destino} está llena`);
-    
-    const columnaDondeEsta = this.dondeEsta(id);
-    const tareaAmover = this.buscar(id)
-    columnaDondeEsta.quitar(id);
-    this.#columnas.get(destino).añadir(tareaAmover)
-    
-    return tareaAmover;
+  if(this.dondeEsta(id) === null){
+    throw new Error(`ERROR: No se ha encontrado la tarea con id: ${id}`);
+  } 
+
+  const columnaDondeEsta = this.dondeEsta(id);                                 
+
+  if(columnaDondeEsta.nombre==="Hecho" || columnaDondeEsta.nombre===destino){     
+    throw new MovimientoNoPermitidoError(id, columnaDondeEsta.nombre, destino)   
   }
+  
+  if(this.columna(destino).llena) {
+    // 1ºFORMA throw new Error(`ERROR: La columna ${destino} está llena`);
+    throw new ColumnaLlenaError(this.columna(destino));                           
+  }
+
+  const tareaAmover = this.buscar(id)
+  const columnaQuitada = columnaDondeEsta.quitar(id);
+  this.#columnas.get(destino).añadir(tareaAmover)
+  return tareaAmover;
+}
   // completar(id): la mueve a «Hecho» y añade a «Por hacer» lo que devuelva tarea.alCompletar()
   //   ⚠️ Sin preguntar si es recurrente: eso es el polimorfismo
     completar(id){
@@ -129,7 +138,7 @@ export class Tablero {
   //     MovimientoNoPermitidoError. Todo se comprueba ANTES de tocar nada.
   //   Pista: mover y completar hacen casi lo mismo. Un método privado #trasladar(id, destino)
   //   con las comprobaciones evita escribirlas dos veces.
-
+    
   // ✍️ C4 (bloque C) ────────────────────────────────────────────────────────────
   // toJSON(): { version, limiteEnCurso, columnas: { "Por hacer": [datos…], … } }
   //   JSON.stringify(tablero) lo llama solo. Sin él sale "{}": los # no se ven. Usa aDatos.
