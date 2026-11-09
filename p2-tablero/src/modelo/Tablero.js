@@ -71,27 +71,57 @@ export class Tablero {
   // buscar(id): la tarea, esté en la columna que esté, o null
   // dondeEsta(id): la Columna donde está, o null
   dondeEsta(id){
-    let columnaBuscada = null; 
-    let encontrada = false;
-    const columnaEncontrada = this.columnas.forEach((columna) => {
+    for(const columna of this.columnas){
       if(columna.tiene(id)){
-        encontrada = true;
-        columnaBuscada = columna
+        return columna;
       }
-    })
-    if(encontrada){
-        return columnaBuscada
-      }
-    else return null;
+    }
+    return null;
+  }
+
+  buscar(id){
+    const columna = this.dondeEsta(id);
+    if(columna === null) return null
+    const tareaEncontrada = columna.tareas.find((tarea) => tarea.id === id)
+    return tareaEncontrada
   }
   // mover(id, destino): Error si no existe la tarea · Error si la columna destino está llena
   //   (¡comprueba ANTES de quitarla de su columna, o se perdería!) · la mueve y la devuelve
-
+  mover(id, destino){
+    if(this.dondeEsta(id) === null) throw new Error(`ERROR: No se ha encontrado la tarea con id: ${id}`);
+    
+    if(this.columna(destino).llena) throw new Error(`ERROR: La columna ${destino} está llena`);
+    
+    const columnaDondeEsta = this.dondeEsta(id);
+    const tareaAmover = this.buscar(id)
+    columnaDondeEsta.quitar(id);
+    this.#columnas.get(destino).añadir(tareaAmover)
+    
+    return tareaAmover;
+  }
   // completar(id): la mueve a «Hecho» y añade a «Por hacer» lo que devuelva tarea.alCompletar()
   //   ⚠️ Sin preguntar si es recurrente: eso es el polimorfismo
+    completar(id){
+      this.mover(id, "Hecho");
 
+      const tarea = this.buscar(id);
+      const columna = this.columna("Por hacer");
+      for(const t of tarea.alCompletar()){
+        columna.añadir(t);
+      }
+      return tarea;
+    }
   // resumen(hoy = new Date()): { porHacer, enCurso, hecho, vencidas }
   //   vencidas = las que estaVencida(hoy) y NO están en «Hecho»
+    resumen(hoy = new Date()){
+      const sinHacer =[...this.columna("Por hacer").tareas, ...this.columna("En curso").tareas] 
+      return {
+        porHacer :  this.columna("Por hacer").tareas.length,
+        enCurso :  this.columna("En curso").tareas.length,
+        hecho :  this.columna("Hecho").tareas.length,
+        vencidas : sinHacer.filter((tarea) => tarea.estaVencida(hoy)).length
+      }
+    }
 
   // ✍️ A5 · Reglas (vuelves a mover y completar) ─────────────────────────────────
   //   - Columna llena → ColumnaLlenaError (en vez de un Error cualquiera)
