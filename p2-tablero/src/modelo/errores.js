@@ -6,10 +6,9 @@
 //   - constructor(mensaje): llama al padre con el mensaje
 //   - name = el nombre de la clase. Pista: this.constructor.name también vale en las subclases.
 export class ErrorTablero extends Error {
-  constructor(campo, mensaje){
+  constructor(mensaje) {
     super(mensaje);
-    this.name = "ErrorTablero";
-    this.campo = campo;
+    this.name = this.constructor.name;
   }
 }
 
@@ -18,10 +17,10 @@ export class ErrorTablero extends Error {
 //   - mensaje: «En curso« está llena (máximo 2)   ← que diga «llena», el nombre y el límite
 //   - guarda this.columna (el NOMBRE, un string) y this.limite
 export class ColumnaLlenaError extends ErrorTablero {
-  constructor(columna){
+  constructor(columna) {
     super(`«${columna.nombre}» está llena (máximo ${columna.limiteWip})`);
-    this.coloumna = columna.nombre
-    this.limite = columna.limiteWip
+    this.columna = columna.nombre;
+    this.limite = columna.limiteWip;
   }
 }
 

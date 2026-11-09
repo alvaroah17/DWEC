@@ -61,6 +61,7 @@ export class Columna {
       return a.limite - b.limite; //Si ninguna de las condiciones de kas fechas se cumplen entonces 
                                   //que se ordene de menor a mayor (mas cercanaa a mas lejana)      
     }) 
+    return arrayOrdenado
   }
 }
 
