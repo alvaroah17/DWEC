@@ -14,9 +14,9 @@ export function delegar(contenedor, tipo, selector, manejador) {
       }
   };
   
-  contenedor.addEventListener(tipo, escuchar);
+  contenedor.addEventListener(tipo, funcionListener);
 
-  const apagarlistener = () => contenedor.removeEventListener(tipo, escuchar);   
+  const apagarlistener = () => contenedor.removeEventListener(tipo, funcionListener);   
 
   return apagarlistener;
 }
