@@ -8,7 +8,8 @@ export const CLAVE = "dwec-p2-tablero";
 
 // ✍️ C5 · guardarTablero(tablero, storage = localStorage): guarda el tablero en CLAVE
 export function guardarTablero(tablero, storage = localStorage) {
-  throw new Error("Sin hacer");
+  // guardar hace JSON.stringify, y stringify llama solo a mi toJSON (C4)
+  guardar(CLAVE, tablero, storage);
 }
 
 // ✍️ C6 · async arrancar({ storage = localStorage, fetchFn = fetch, url = "/tareas-iniciales.json",
@@ -20,7 +21,27 @@ export async function arrancar({
   url = "/tareas-iniciales.json",
   limiteEnCurso = 3,
 } = {}) {
-  throw new Error("Sin hacer");
-}
+  // 1. ¿Hay algo guardado? cargar da null si no hay nada o si no es JSON
+  const guardado = cargar(CLAVE, null, storage);
 
-(void Tablero, borrar, cargar, guardar, obtenerJSON); // (borra esta línea cuando los uses)
+  if (guardado !== null) {
+    try {
+      // Lo recupero con mi C4 y aquí se acaba: no pido nada a la red
+      const tablero = Tablero.desdeJSON(guardado);
+      return { tablero, origen: "guardado" };
+    } catch {
+      // Era JSON pero desdeJSON no lo acepta (otra versión) -> lo borro
+      borrar(CLAVE, storage);
+    }
+  }
+
+  // 2. No había nada válido -> pido las iniciales con mi C2 y las meto con desde (A3)
+  try {
+    const datos = await obtenerJSON(url, fetchFn);
+    const tablero = Tablero.desde(datos, limiteEnCurso);
+    return { tablero, origen: "inicial" };
+  } catch (error) {
+    // 3. Tampoco se puede (sin red, 404, no es JSON) -> tablero vacío y el mensaje. NO lanza
+    return { tablero: new Tablero(limiteEnCurso), origen: "vacio", error: error.message };
+  }
+}
