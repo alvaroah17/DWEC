@@ -142,18 +142,48 @@ export class Tablero {
   // ✍️ C4 (bloque C) ────────────────────────────────────────────────────────────
   // toJSON(): { version, limiteEnCurso, columnas: { "Por hacer": [datos…], … } }
   //   JSON.stringify(tablero) lo llama solo. Sin él sale "{}": los # no se ven. Usa aDatos.
+   toJSON() {
+    const columnas = {};
+
+    // Cada columna -> su nombre con sus tareas en papel (aDatos)
+    for (const columna of this.columnas) {
+      const tareasEnDatos = [];
+      for (const tarea of columna.tareas) {
+        tareasEnDatos.push(aDatos(tarea));
+      }
+      columnas[columna.nombre] = tareasEnDatos;
+    }
+
+    return {
+      version: Tablero.VERSION_DATOS,
+      limiteEnCurso: this.columna("En curso").limiteWip,
+      columnas: columnas,
+    };
+  }
 
   /** Lo contrario de toJSON: el MISMO tablero (columnas, ids y límite WIP). Lanza si no encaja. */
+
+  // C4 desdeJSON: statc porque aún no hay tablero, lo creo yo. Si no encaja lanza error
   static desdeJSON(datos) {
-    throw new Error("Sin hacer");
+    if (datos === null || datos === undefined || datos.version !== Tablero.VERSION_DATOS) {
+      throw new Error("Datos de tablero no válidos (versión distinta o vacíos)");
+    }
+
+    const tablero = new Tablero(datos.limiteEnCurso);
+
+    // Cada tarea vuelve a ser Tarea (con su id) y va directa a SU columna.
+    // Con crearTarea irían todas a «Por hacer»
+    for (const nombre of Tablero.COLUMNAS) {
+      const tareasEnDatos = datos.columnas[nombre];
+      for (const datosTarea of tareasEnDatos) {
+        const tarea = desdeDatos(datosTarea);
+        tablero.columna(nombre).añadir(tarea);
+      }
+    }
+
+    return tablero;
   }
+  
 }
 
 // Comprueba con:  docker compose run --rm web npm test bloque-a
-(void Columna,
-  ColumnaLlenaError,
-  MovimientoNoPermitidoError,
-  Tarea,
-  TareaRecurrente,
-  aDatos,
-  desdeDatos); // (borra esta línea cuando los uses)
