@@ -47,4 +47,3 @@ export class TareaRecurrente extends Tarea {
 }
 
 // Comprueba con:  docker compose run --rm web npm test 2-recurrente
-void Tarea; // (borra esta línea cuando uses Tarea)
