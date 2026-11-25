@@ -8,10 +8,10 @@ export class TareaRecurrente extends Tarea {
   
   // new TareaRecurrente("Sacar la basura", "media", "2026-10-23", 7): lo mismo que una Tarea + cadaDias
   // (Bloque C · ✍️ C3: añadirás un quinto parámetro, id = null, y se lo pasarás también al super)
-  constructor(titulo, prioridad, limite, cadaDias) {
+  constructor(titulo, prioridad, limite, cadaDias, id=null) {
     if(!Number.isInteger(cadaDias) || cadaDias<1) throw new RangeError("ERROR: El valor introducido no es válido");
 
-    super(titulo, prioridad, limite);
+    super(titulo, prioridad, limite, id);
 
     this.cadaDias = cadaDias;
 
