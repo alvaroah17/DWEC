@@ -64,7 +64,7 @@ export class Tablero {
     else if ("presupuesto" in datos){
       const presupuesto = datos.presupuesto;
 
-      const tareaConGastos = new TareaConGastos(titulo, prioridad, limite, presupuesto);
+      const tareaConGastos = new TareaConGastos(titulo, prioridad, limite, presupuesto); //
 
       this.columna("Por hacer").añadir(tareaConGastos);
 
@@ -112,6 +112,11 @@ export class Tablero {
     // 1ºFORMA throw new Error(`ERROR: La columna ${destino} está llena`);
     throw new ColumnaLlenaError(this.columna(destino));                           
   }
+
+  if(destino === "Hecho"){
+    const tareaQueSeTermina = this.buscar(id); 
+    tareaQueSeTermina.comprobarAlTerminar(); 
+  } 
 
   const tareaAmover = this.buscar(id)
   const columnaQuitada = columnaDondeEsta.quitar(id);

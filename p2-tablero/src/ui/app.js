@@ -69,7 +69,9 @@ export function iniciarApp(raiz, tablero, { hoy = null, alCambiar = () => {} } =
   //   La fecha de hoy: const ahora = hoy ?? new Date();  (los tests pasan una fija)
   function pintar() {
     const ahora = hoy ?? new Date();
-
+    if (columna.nombre === "Por hacer" && tablero.buscar(Number(tarjeta.dataset.id)).limite){
+      tarjeta.append(crearBoton("Cambiar urgencia y empezar", "urgencia"));
+    }
     for (const columna of tablero.columnas) {
       const nombreColumna = columna.nombre;
       const divColumna = columnas.querySelector(`[data-columna="${nombreColumna}"]`);
@@ -168,6 +170,12 @@ export function iniciarApp(raiz, tablero, { hoy = null, alCambiar = () => {} } =
       } else if (accion === "completar") {
         tablero.completar(id);
       }
+      else if (accion === "urgencia") {
+      // cierra el formulario que haya abierto: columnas.querySelector("form")?.remove()
+      // TU TURNO: añade crearFormulario(tarea) a ESA tarjeta y pon el foco en su input
+        return;   // abrir no cambia nada: ni alCambiar ni repintar
+      }
+      else if (accion === "cancelar") return columnas.querySelector("form")?.remove();
     });
   });
 
