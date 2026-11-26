@@ -34,3 +34,11 @@ export class MovimientoNoPermitidoError extends ErrorTablero {
     this.hasta = hasta;
   }
 }
+
+export class PresupuestoSuperadoError extends ErrorTablero {
+  constructor(gastado, presupuesto) {
+    super(`Gastados ${gastado} € de ${presupuesto} €`);
+    this.gastado = gastado;
+    this.presupuesto = presupuesto;
+  }
+}

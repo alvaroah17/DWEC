@@ -5,6 +5,7 @@ import { Columna } from "./Columna.js";
 import { ColumnaLlenaError, MovimientoNoPermitidoError } from "./errores.js";
 import { Tarea } from "./Tarea.js";
 import { TareaRecurrente } from "./TareaRecurrente.js";
+import { TareaConGastos } from "./TareaConGastos.js"; //
 import { aDatos, desdeDatos } from "./serializar.js";
 
 export class Tablero {
@@ -60,6 +61,15 @@ export class Tablero {
 
       return tareaRecurrente;
     }
+    else if ("presupuesto" in datos){
+      const presupuesto = datos.presupuesto;
+
+      const tareaConGastos = new TareaConGastos(titulo, prioridad, limite, presupuesto);
+
+      this.columna("Por hacer").añadir(tareaConGastos);
+
+      return tareaConGastos;
+    } 
     else{  
       const tarea = new Tarea(titulo, prioridad, limite);
       
